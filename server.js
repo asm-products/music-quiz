@@ -8,6 +8,7 @@
         express = require('express'),
         compression = require('compression'),
         bodyParser = require('body-parser'),
+        mongoose = require('mongoose'),
         ssl = {
             key: fs.readFileSync(config.ssl.key),
             cert: fs.readFileSync(config.ssl.cert),
@@ -59,10 +60,55 @@
         next();
     });
 
+
+    mongoose.connect( 'mongodb://localhost/music-quiz' );
+    var db = mongoose.connection;
+    db.on('error', console.error.bind(console, 'connection error:'));
+    db.once('open', function callback () {
+      console.log("mongoose connection OK " );
+
+        var Schema   = mongoose.Schema;
+        var FBUser = new Schema({
+            user_id    : String,
+            firstname  : String,
+            lastname   : String,
+            gender     : String,
+            age_range  : String,
+            created_at : Date,
+            updated_at : Date
+        });
+
+        // FBUser.pre('save', function(next){
+        //   now = new Date();
+        //   this.updated_at = now;
+        //   if ( !this.created_at ) {
+        //     this.created_at = now;
+        //   }
+        //   next();
+        // });
+
+        var objFBUser = mongoose.model( 'FBUser', FBUser );
+
+        var currentFBUser = new objFBUser({user_id:'41',firstname:'Mark',lastname:'Zuckerberg',gender:'M',age_range:'21+'  });
+
+        console.log(currentFBUser)
+        currentFBUser.save(); 
+
+    });
+
+
+
+
+
+
     // Handle all static file GET requests.
     app.use(express.static(__dirname + config.publicDirectory), {
         maxAge: config.expiryDate
     });
+
+
+
+
 
     // Start listening on a port.
     server = https.createServer(ssl, app).listen(config.port, function() {

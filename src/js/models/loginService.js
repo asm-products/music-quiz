@@ -4,30 +4,29 @@ musicQuizApp.service('loginService', ['notificationsService', 'Facebook',
     function (notificationsService, Facebook) {
         'use strict';
 
-        var getGamerDetails,
-            getFriendsWhoPlay,
-            that = this;
-
+        var that = this;
 
         this.gamer = {};
         this.showLogin = false;
         this.showLogout = false;
 
-        // Get current gamer details.
-        getGamerDetails = function(callback, $scope) {
-            Facebook.api("/v2.1/me?fields=name,first_name,last_name,email,picture,link,gender,locale,age_range", function (response) { 
-                    if (response && !response.error) {
-                        that.gamer = response;
-                    }
+        this.facebookCallback = function (response) { 
+            if (response && !response.error) {
+                that.gamer = response;
+            }
 
-                    if (response && response.error) {
-                        // todo: what's the best way to handle this error? A notification?
-                        console.log(response.error);
-                    }
+            if (response && response.error) {
+                // todo: send a notification.
+            }
 
-                    callback($scope);
-                }
-            );
+            return response;
+        }
+
+        // Set current gamer details.
+        this.setGamerDetails = function() {
+            Facebook.api(
+                    "/v2.1/me?fields=name,first_name,last_name,email,picture,link,gender,locale,age_range", 
+                    that.facebookCallback);
         }
 
         // This is called with the results from from Facebook.getLoginStatus().
@@ -36,21 +35,19 @@ musicQuizApp.service('loginService', ['notificationsService', 'Facebook',
             // Full docs on the response object can be found in the documentation for Facebook.getLoginStatus().
             if (response.status === 'connected') {
                 // Logged into your app and Facebook.
-                this.gamer = getGamerDetails(callback, $scope);
-                this.showLogout = true;
-                this.showLogin = false;
-                return this.gamer;
-            } else if (response.status === 'not_authorized') {
-                // The person is logged into Facebook, but not your app.
-                this.showLogin = true;
-                this.showLogout = false;
+                that.gamer = that.setGamerDetails();
+                that.showLogin = false;
+                that.showLogout = true;
             } else {
-                // The person is not logged into Facebook, so we're not sure if they are logged into this app or not.
-                this.showLogin = true;
-                this.showLogout = false;
+                // response.status is 'not_authorized': the gamer is logged into Facebook, but not this app,
+                // or response.status has any other value: the gamer is not logged into Facebook, so we're not sure if they are logged into this app or not.
+                that.showLogin = true;
+                that.showLogout = false;
             }
 
             callback($scope);
+
+            return that;
         }
 
         // Standard notifications related to login operations.
@@ -74,7 +71,7 @@ musicQuizApp.service('loginService', ['notificationsService', 'Facebook',
 
         // Logout the Facebook session of the current gamer.
         this.logout = function() {
-            Facebook.logout();
+            return Facebook.logout();
         }
 
         // Trigger a Facebook login.
@@ -83,7 +80,7 @@ musicQuizApp.service('loginService', ['notificationsService', 'Facebook',
             //      1. Logged into your app ('connected')
             //      2. Logged into Facebook, but not your app ('not_authorized')
             //      3. Not logged into Facebook and can't tell if they are logged into your app or not.
-            Facebook.login(function (response) {
+            return Facebook.login(function (response) {
                 callback(response);
             });
         }

@@ -1,6 +1,6 @@
 {
   "name": "musicQuiz",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "dependencies": {
     "angular": "1.2.21",
     "angular-route": "1.2.21",

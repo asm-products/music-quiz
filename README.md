@@ -28,9 +28,14 @@ You will need to setup SSL, either a self signed certificate or a real SSL.
 The paths to your SSL is in your config.js file.
 
 
-### Facebook and Decibel
+### Facebook config
 
-You also need to setup a Facebook App and signup to the Decibel API. Both will issue keys to store in config.js
+Update the ./src/js/facebookConfig.js file with your Facebook Application Id.
+
+
+### Decibel config
+
+Set the Decibel API keys in the ./config.js file you created, based on the template ./.config.js file.
 
 
 ### Sass
@@ -113,16 +118,6 @@ Browse to localhost on the port that is being listened to.
 
 OAuth from the [https://developers.facebook.com/docs/facebook-login/login-flow-for-web/v2.1](Facebook login is documented) on the official Facebook developer website. The [https://developers.facebook.com/docs/plugins/login-button](login button is documented) on the same site.
 
-
-## Assembly community
-
-This is a product being built by the Assembly community. You can help push this idea forward by visiting [https://assembly.com/music-quiz](https://assembly.com/music-quiz).
-
-### How Assembly Works
-
-Assembly products are like open-source and made with contributions from the community. Assembly handles the boring stuff like hosting, support, financing, legal, etc. Once the product launches we collect the revenue and split the profits amongst the contributors.
-
-Visit [https://assembly.com](https://assembly.com) to learn more.
 
 ## Run from source once everything has been installed
 

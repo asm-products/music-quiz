@@ -1,12 +1,13 @@
 {
   "name": "musicQuiz",
   "description": "Music quiz using the Decibel API.",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "private": true,
   "dependencies": {
     "body-parser": "1.6.3",
     "compression": "1.0.10",
-    "express": "4.4.5"
+    "express": "4.4.5",
+    "mongoose": "3.8.15"
   },
   "devDependencies": {
     "grunt": "0.4.5",

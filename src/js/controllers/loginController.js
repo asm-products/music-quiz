@@ -4,23 +4,17 @@ musicQuizApp.controller('loginController', ['$scope', 'notificationsService', 'l
 		'use strict';
 
         $scope.showResult = false;
-
         $scope.notifications = notificationsService;
-
         $scope.login = loginService;
 
-        // Call the login function from the login service and set the callback once the dialog is completed.
-        $scope.login.login(function (response) {
+        // todo: check if this callback should be refactored as it's very similar to the one in the sidebarController.
+        $scope.facebookStatusChangeCallback = function (response) {
 
             // Local callback to update the UI.
             var callback = function ($scope) {
                 // The sidebar has now been populated.
                 $scope.showSidebar = true;
-
                 $scope.showResult = true;
-
-                // Update the scope to display the sidebar.
-                $scope.$apply();
             };
 
             // Notifications to display.
@@ -37,7 +31,12 @@ musicQuizApp.controller('loginController', ['$scope', 'notificationsService', 'l
 
             // Update the login service.
             $scope.login.statusChangeCallback(response, callback, $scope);
-        });
+
+            return response;
+        };
+
+        // Call the login function from the login service and set the callback once the dialog is completed.
+        $scope.login.login($scope.facebookStatusChangeCallback);
     }
 
 ]);
